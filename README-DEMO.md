@@ -208,3 +208,35 @@ npm install -g @nestjs/cli
             - ....
         - The Swagger UI will be served here: http://localhost:3000/api when the app started
 ![npm start](img/swager.png)
+
+- Middleware for request trace id
+    - Create the middleware using
+         ```shell script
+          nest g mi middleware/TraceId
+         ```
+    and add the logic handling request to extract the trace id from each request header
+    to put it on response header (creating a new one when missing), see [TraceIdMiddleware](/src/middleware/trace-id.middleware.ts).
+    - Configure the app to use this middleware by implementing `NestModule#configure`) in [AppModule](src/app.module.ts)
+        ```typescript
+          ....
+          export class AppModule implements NestModule {
+            configure(consumer: MiddlewareConsumer) {
+              consumer
+                .apply(TraceIdMiddleware)
+                .forRoutes(WarriorsController);
+             // .forRoutes('warriors'); 
+             // .forRoutes({ path: 'warriors', method: RequestMethod.GET });
+             // forRoutes({ path: 'war*', method: RequestMethod.ALL });
+             // .exclude(
+                 //     { path: 'warriors/xxx', method: RequestMethod.GET },
+                 //     { path: 'warriors', method: RequestMethod.POST },
+                 //     'warriors/(.*)',
+                 //   )
+            }
+          }
+        ```
+      Request with trace id   
+![npm start](img/curl-trace-id.png)
+
+      Request without trace id, will create one   
+![npm start](img/curl-new-trace-id.png)
