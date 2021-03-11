@@ -73,3 +73,22 @@ npm install -g @nestjs/cli
 ````
 
 ![npm start](img/start-with-db.png)
+
+#### 3. Create our warriors api
+
+- Models
+    - Add model module
+     ```shell script
+      nest g mo model
+     ```
+    - Create interface [Warrior](src/model/warrior.interface.ts)
+    ```shell script
+      nest g cl model/warrior.entity
+    ```
+    - Create entity [WarriorEntity](src/model/warrior.entity.ts)
+    ```shell script
+      nest g interface model/warrior
+    ```
+    and then import it in the current module as `TypeOrmModule` an export it as `TypeOrmModule.forFeature([...])` in [warriors.module.ts](src/warriors/warriors.module.ts)
+
+![npm start](img/start-with-models.png)

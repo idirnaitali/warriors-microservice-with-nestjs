@@ -1,5 +1,6 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { ModelModule } from './model/model.module';
 
 @Module({
   imports: [
@@ -18,6 +19,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
         entitiesDir: 'src/entities',
       },
     }),
+    ModelModule,
   ],
   controllers: [],
   providers: [],
