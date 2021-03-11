@@ -12,19 +12,19 @@ export class HttpExceptionFilter implements ExceptionFilter<HttpException> {
     const response = exception.getResponse();
     if (response['status'] && response['info'] && response['error'] && response['details']) {
       res.json(response);
+    } else {
+      const payload = {
+        errors: [
+          {
+            code: response['code'] || 'err.unknown',
+            message: exception.message,
+            detail: exception.getResponse()['error'],
+          },
+        ],
+        error_reference: res.getHeader('x-trace-id'),
+      };
+
+      res.json(payload);
     }
-
-    const payload = {
-      errors: [
-        {
-          code: response['code'] || 'err.unknown',
-          message: exception.message,
-          detail: exception.getResponse()['error'],
-        },
-      ],
-      error_reference: res.getHeader('x-trace-id'),
-    };
-
-    res.json(payload);
   }
 }

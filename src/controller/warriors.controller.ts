@@ -27,6 +27,7 @@ import {
   ApiTags,
 } from '@nestjs/swagger';
 import { InjectPinoLogger, PinoLogger } from 'nestjs-pino/dist';
+import { ApiKey } from '../decorator/api-key.decorator';
 
 class CreatedWarriorDto {
   @ApiProperty()
@@ -58,6 +59,7 @@ export class WarriorsController {
   async create(
     @Res() res: Response,
     @Body() warrior: WarriorDto,
+    @ApiKey('W-group') apiKey: string,
   ): Promise<Response<CreatedWarriorDto>> {
     this.log.debug({ message: 'Creating warrior...', body: warrior });
     let warriorId;

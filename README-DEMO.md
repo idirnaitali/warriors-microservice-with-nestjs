@@ -275,4 +275,35 @@ npm install -g @nestjs/cli
            ],
            "error_reference": "Warrior=35e6a491-cd46-4457-bec6-557731077005-f926365d-ed3f-4f2c-9107-08ead2deb933"
        }
-       ````        
+       ````
+- Custom decorators
+    - We create decorator [@ApiKey](/src/decorator/api-key.decorator.ts) to intercept apiKey from request header easily.
+    When used, it will try to extract apiKey from request header and throw exception when missing or not valid 
+    (don't start with given group). Used in [WarriorsController#create()](/src/controller/warriors.controller.ts)
+    - Used like `myMethod(.., @ApiKey('W-group') apiKey: string, ...)`
+    - When missing apiKey header
+        ```json
+        {
+            "errors": [
+                {
+                    "code": "err.unauthorized",
+                    "message": "Missing apiKey header"
+                }
+            ],
+            "error_reference": "Warrior=7ce09606-6ad9-4809-8f44-cffb2e378538-780cf5f8-2cac-4b01-b30d-74a6a62f1451"
+        }
+        ```
+    - When got apiKey header not allowed
+        ```json
+        {
+            "errors": [
+                {
+                    "code": "err.not-allowed",
+                    "message": "Operation not allowed for api key group"
+                }
+            ],
+            "error_reference": "Warrior=125dd729-5ab1-457e-bf6d-c26293863a60-3e6cba3c-2356-4fe3-bcb0-c2f81e79e0c0"
+        }
+        ```
+    - When got valid apiKey header
+          
