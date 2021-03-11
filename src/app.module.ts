@@ -1,6 +1,10 @@
-import { Module } from '@nestjs/common';
+import { Module, ValidationPipe } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ModelModule } from './model/model.module';
+import { DtoModule } from './dto/dto.module';
+import { ServiceModule } from './service/service.module';
+import { ControllerModule } from './controller/controller.module';
+import { APP_PIPE } from '@nestjs/core';
 
 @Module({
   imports: [
@@ -20,8 +24,15 @@ import { ModelModule } from './model/model.module';
       },
     }),
     ModelModule,
+    DtoModule,
+    ServiceModule,
+    ControllerModule,
   ],
-  controllers: [],
-  providers: [],
+  providers: [
+    {
+      provide: APP_PIPE,
+      useClass: ValidationPipe,
+    },
+  ],
 })
 export class AppModule {}

@@ -92,3 +92,48 @@ npm install -g @nestjs/cli
     and then import it in the current module as `TypeOrmModule` an export it as `TypeOrmModule.forFeature([...])` in [warriors.module.ts](src/warriors/warriors.module.ts)
 
 ![npm start](img/start-with-models.png)
+
+- DTOs
+    - Add dto module
+    ```shell script
+      nest g mo dto
+    ```
+    - Create [WarriorDto](src/dto/warrior.dto.ts)
+    ```shell script
+      nest g cl dto/warrior.dto
+    ```
+- Services & Repositories
+    - Add service module
+    ```shell script
+      nest g mo service
+    ```
+    - Create [WarriorsService](src/service/warriors.service.ts)
+    ```shell script
+      nest g s service/warriors.srvice
+    ```
+    - Make the service injectable using nest `@Injectable` and inject a warrior repository using nest `@InjectRepository(WarriorEntity)` on the service constructor
+    ```typescript
+    @Injectable()
+    export class WarriorsService {  
+  
+      constructor(@InjectRepository(WarriorEntity) private readonly warriorsRepository: Repository<WarriorEntity>) {
+      }
+      ...
+    }
+    ```
+    - Code the business logics
+
+- Controllers
+    - Add controller module 
+    ```shell script
+      nest g mo controller
+    ```
+    - Create [WarriorsController](src/controller/warriors.controller.ts)
+    ```shell script
+      nest g co service/warriors.controller
+    ```
+    - Inject the service in the created controller and code the endpoints
+    - Add params validation using pipe transformers 
+    - Add request body validation using library [class-validator](https://github.com/typestack/class-validator#readme),
+     see [DTOs](src/dto/warrior.dto.ts) 
+![npm start](img/start-with-controllers.png)
