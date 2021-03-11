@@ -305,5 +305,141 @@ npm install -g @nestjs/cli
             "error_reference": "Warrior=125dd729-5ab1-457e-bf6d-c26293863a60-3e6cba3c-2356-4fe3-bcb0-c2f81e79e0c0"
         }
         ```
-    - When got valid apiKey header
-          
+    - Will let pas and map the apiKey header when got a valid one
+
+- Health check
+    - Install [@nestjs/terminus](https://www.npmjs.com/package/@nestjs/terminus)
+    - Create [HealthCheckController](/src/controller/health-check/health-check.controller.ts) controller
+         ```shell script
+            nest g co  controller/healthCheck
+         ```
+      and code the health strategy check, using the nest predefined indicators:
+      - HealthCheckService
+      - DNSHealthIndicator
+      - TypeOrmHealthIndicator
+      - MemoryHealthIndicator
+      - DiskHealthIndicator: 
+      or [implement a custom one](https://docs.nestjs.com/recipes/terminus#custom-health-indicator)
+    - Import the `TerminusModule` into [ControllerModule](src/controller/controller.module.ts)
+    - The exposed health check endpoint: http://localhost:3000/health
+    - Example when service health check `UP`
+        ````json
+          {
+           "status":"ok",
+           "info":{
+              "warrior.com":{
+                 "status":"up"
+              },
+              "google":{
+                 "status":"up"
+              },
+              "database":{
+                 "status":"up"
+              },
+              "memory_rss":{
+                 "status":"up"
+              },
+              "memory_heap":{
+                 "status":"up"
+              },
+              "storage_threshold":{
+                 "status":"up"
+              },
+              "storage_thresholdPercent":{
+                 "status":"up"
+              }
+           },
+           "error":{
+              
+           },
+           "details":{
+              "warrior.com":{
+                 "status":"up"
+              },
+              "google":{
+                 "status":"up"
+              },
+              "database":{
+                 "status":"up"
+              },
+              "memory_rss":{
+                 "status":"up"
+              },
+              "memory_heap":{
+                 "status":"up"
+              },
+              "storage_threshold":{
+                 "status":"up"
+              },
+              "storage_thresholdPercent":{
+                 "status":"up"
+              }
+           }
+        }
+        ````
+    - Example when service health check `DOWN`
+        ```json
+        {
+           "status":"error",
+           "info":{
+              "google":{
+                 "status":"up"
+              },
+              "storage_thresholdPercent":{
+                 "status":"up"
+              }
+           },
+           "error":{
+              "warrior.com":{
+                 "status":"down",
+                 "message":"Request failed with status code 503",
+                 "statusCode":503,
+                 "statusText":"Service Unavailable"
+              },
+              "database":{
+                 "status":"down"
+              },
+              "memory_rss":{
+                 "status":"down",
+                 "message":"Used rss exceeded the set threshold"
+              },
+              "memory_heap":{
+                 "status":"down",
+                 "message":"Used heap exceeded the set threshold"
+              },
+              "storage_threshold":{
+                 "status":"down",
+                 "message":"Used disk storage exceeded the set threshold"
+              }
+           },
+           "details":{
+              "google":{
+                 "status":"up"
+              },
+              "storage_thresholdPercent":{
+                 "status":"up"
+              },
+              "warrior.com":{
+                 "status":"down",
+                 "message":"Request failed with status code 503",
+                 "statusCode":503,
+                 "statusText":"Service Unavailable"
+              },
+              "database":{
+                 "status":"down"
+              },
+              "memory_rss":{
+                 "status":"down",
+                 "message":"Used rss exceeded the set threshold"
+              },
+              "memory_heap":{
+                 "status":"down",
+                 "message":"Used heap exceeded the set threshold"
+              },
+              "storage_threshold":{
+                 "status":"down",
+                 "message":"Used disk storage exceeded the set threshold"
+              }
+           }
+        }
+        ```
