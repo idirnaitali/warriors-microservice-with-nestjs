@@ -5,9 +5,11 @@ import { DtoModule } from './dto/dto.module';
 import { ServiceModule } from './service/service.module';
 import { ControllerModule } from './controller/controller.module';
 import { APP_PIPE } from '@nestjs/core';
+import { LoggerModule } from 'nestjs-pino';
 
 @Module({
   imports: [
+    // ------------------ ORM config --------------------
     TypeOrmModule.forRoot({
       type: 'postgres',
       host: 'localhost',
@@ -23,6 +25,9 @@ import { APP_PIPE } from '@nestjs/core';
         entitiesDir: 'src/entities',
       },
     }),
+    // ------------------ LOGGER config ------------------
+    LoggerModule.forRoot({ pinoHttp: { useLevelLabels: true, levelVal: 100 } }),
+    // ------------------ Modules ------------------------
     ModelModule,
     DtoModule,
     ServiceModule,

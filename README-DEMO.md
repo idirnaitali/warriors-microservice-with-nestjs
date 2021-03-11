@@ -137,3 +137,51 @@ npm install -g @nestjs/cli
     - Add request body validation using library [class-validator](https://github.com/typestack/class-validator#readme),
      see [DTOs](src/dto/warrior.dto.ts) 
 ![npm start](img/start-with-controllers.png)
+
+- Logs
+    - Add [nestjs-pino](https://www.npmjs.com/package/nestjs-pino)
+    - Add/imports logger config on [app.module.ts](/src/app.module.ts) using ` LoggerModule.forRoot({...ptions})`
+    - Inject loggers on classes using  `@InjectPinoLogger(MyClass.name)` and the use `this.log.<level>(...)` to log.
+![logs](img/logs.png)
+    - Json log example:
+    ```json
+    {
+      "level":"error",
+      "time":1598616886642,
+      "pid":20277,
+      "hostname":"MBP-de-Idir",
+      "req":{
+        "id":5,
+        "method":"POST",
+        "url":"/api/v1/warriors",
+        "headers":{
+          "host":"localhost:3000",
+          "connection":"keep-alive",
+          "content-length":"51",
+          "accept":"application/json",
+          "user-agent":"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/84.0.4147.125 Safari/537.36",
+          "content-type":"application/json",
+          "origin":"http://localhost:3000",
+          "sec-fetch-site":"same-origin",
+          "sec-fetch-mode":"cors",
+          "sec-fetch-dest":"empty",
+          "referer":"http://localhost:3000/api/",
+          "accept-encoding":"gzip, deflate, br",
+          "accept-language":"fr-FR,fr;q=0.9,en-US;q=0.8,en;q=0.7"
+        },
+        "remoteAddress":"::1",
+        "remotePort":49853
+      },
+      "context":"WarriorsController",
+      "message":"Failed to create a warrior",
+      "detail":{
+        "response":{
+          "statusCode":400,
+          "message":"Pseudo 'string' already exist",
+          "error":"Cannot create warrior"
+        },
+        "status":400,
+        "message":"Pseudo 'string' already exist"
+      }
+    }
+    ```

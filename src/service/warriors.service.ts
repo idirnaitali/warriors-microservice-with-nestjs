@@ -25,11 +25,11 @@ export class WarriorNotFoundException extends NotFoundException {
 
 export class UniquePseudoException extends BadRequestException {
   constructor(pseudo: string, warriorId: number) {
-    const description = `Pseudo '${pseudo}' already exist`;
+    const message = `Pseudo '${pseudo}' already exist`;
     if (warriorId) {
-      super('Cannot update warrior', description);
+      super(message, 'Cannot update warrior');
     } else {
-      super('Cannot create warrior', description);
+      super(message, 'Cannot create warrior');
     }
   }
 }
