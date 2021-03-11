@@ -185,3 +185,26 @@ npm install -g @nestjs/cli
       }
     }
     ```
+
+- Swagger
+    - Add [nestjs-swagger](https://www.npmjs.com/package/@nestjs/swagger) and [swagger-ui-express](https://www.npmjs.com/package/swagger-ui-express)
+    - Add swagger config on [main.ts](/src/main.ts)
+    ```typescript
+      const options = new DocumentBuilder()
+          .setTitle('Warriors API documentation')
+          .setDescription('The cats API description')
+          .setVersion('1.0')
+          .build();
+        const document = SwaggerModule.createDocument(app, options);
+        SwaggerModule.setup('api', app, document);
+    ```
+    - Add documentation:
+        - DTOs fields doc: `@ApiProperty({ ...options })`
+        - Request parameters doc: `@ApiParam({ name: 'id', type: 'number' })`
+        - Request and response body will be automatically documented
+        - Controllers doc:
+            - `@ApiTags('warriors')` to tag ours warriors controller
+            - `@ApiCreatedResponse({ ...options })`, `@ApiBadRequestResponse({ ...options })`... for response case documentations
+            - ....
+        - The Swagger UI will be served here: http://localhost:3000/api when the app started
+![npm start](img/swager.png)

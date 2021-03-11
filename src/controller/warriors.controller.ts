@@ -1,26 +1,40 @@
 import {
   Body,
   Controller,
-  Delete,
-  Get,
   HttpCode,
-  HttpException,
-  InternalServerErrorException,
   Param,
   ParseIntPipe,
+  Delete,
+  Get,
   Post,
   Put,
-  Res,
+  Res, HttpException, InternalServerErrorException,
 } from '@nestjs/common';
 import { WarriorsService } from '../service/warriors.service';
 import { WarriorDto } from '../dto/warrior.dto';
 import { Response } from 'express';
+import {
+  ApiBadRequestResponse,
+  ApiCreatedResponse,
+  ApiNoContentResponse,
+  ApiNotFoundResponse,
+  ApiOkResponse,
+  ApiParam,
+  ApiProperty,
+  ApiTags,
+} from '@nestjs/swagger';
 import { InjectPinoLogger, PinoLogger } from 'nestjs-pino/dist';
 
-interface CreatedWarriorDto {
+class CreatedWarriorDto {
+  @ApiProperty()
   warriorId: number;
+
+  constructor(warriorId: number) {
+    this.warriorId = warriorId;
+  }
 }
 
+@ApiTags('warriors')
 @Controller(WarriorsController.PATH)
 export class WarriorsController {
   private static readonly PATH: string = '/api/v1/warriors';
@@ -31,6 +45,11 @@ export class WarriorsController {
     private readonly log: PinoLogger,
   ) {}
 
+  @ApiCreatedResponse({
+    type: CreatedWarriorDto,
+    description: 'The payload containing the created warrior id.',
+  })
+  @ApiBadRequestResponse({ description: 'The pseudo already exists.' })
   @Post()
   async create(
     @Res() res: Response,
@@ -48,6 +67,12 @@ export class WarriorsController {
     return res.json({ warriorId });
   }
 
+  @ApiOkResponse({ type: WarriorDto })
+  @ApiBadRequestResponse({ description: 'Given id should be numeric.' })
+  @ApiNotFoundResponse({
+    description: 'The warrior with the given id does not exist.',
+  })
+  @ApiParam({ name: 'id', type: 'number' })
   @Get(':id')
   getById(@Param('id', new ParseIntPipe()) id: number): Promise<WarriorDto> {
     this.log.debug({ message: `Retrieving warrior with id ${id}` });
@@ -58,6 +83,12 @@ export class WarriorsController {
     }
   }
 
+  @ApiBadRequestResponse({ description: 'Given id should be numeric.' })
+  @ApiNotFoundResponse({
+    description: 'The warrior with the given id does not exist.',
+  })
+  @ApiParam({ name: 'id', type: 'number' })
+  @ApiOkResponse({ type: WarriorDto })
   @Put(':id')
   update(
     @Param('id', new ParseIntPipe()) id: number,
@@ -74,6 +105,12 @@ export class WarriorsController {
     }
   }
 
+  @ApiNoContentResponse({ description: 'The warrior was successfully deleted' })
+  @ApiBadRequestResponse({ description: 'Given id should be numeric.' })
+  @ApiNotFoundResponse({
+    description: 'The warrior with the given id does not exist.',
+  })
+  @ApiParam({ name: 'id', type: 'number' })
   @Delete(':id')
   @HttpCode(204)
   delete(@Param('id', new ParseIntPipe()) id: number): Promise<void> {
