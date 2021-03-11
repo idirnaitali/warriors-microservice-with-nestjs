@@ -19,7 +19,7 @@ export class WarriorsServiceException extends Error {
 
 export class WarriorNotFoundException extends NotFoundException {
   constructor(warriorId: number) {
-    super(`Warrior with id '${warriorId}' does not exist`, 'Not found');
+    super({ code: 'err.warrior-not-found', message: `Warrior with id '${warriorId}' does not exist` }, 'Not found');
   }
 }
 
@@ -27,9 +27,9 @@ export class UniquePseudoException extends BadRequestException {
   constructor(pseudo: string, warriorId: number) {
     const message = `Pseudo '${pseudo}' already exist`;
     if (warriorId) {
-      super(message, 'Cannot update warrior');
+      super({ code: 'err.update-warrior', message }, 'Cannot update warrior');
     } else {
-      super(message, 'Cannot create warrior');
+      super({ code: 'err.create-warrior', message }, 'Cannot create warrior');
     }
   }
 }

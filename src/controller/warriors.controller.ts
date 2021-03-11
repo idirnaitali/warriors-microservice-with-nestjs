@@ -8,7 +8,10 @@ import {
   Get,
   Post,
   Put,
-  Res, HttpException, InternalServerErrorException,
+  Res,
+  HttpException,
+  InternalServerErrorException,
+  ForbiddenException,
 } from '@nestjs/common';
 import { WarriorsService } from '../service/warriors.service';
 import { WarriorDto } from '../dto/warrior.dto';
@@ -43,7 +46,8 @@ export class WarriorsController {
     private readonly warriorsService: WarriorsService,
     @InjectPinoLogger(WarriorsController.name)
     private readonly log: PinoLogger,
-  ) {}
+  ) {
+  }
 
   @ApiCreatedResponse({
     type: CreatedWarriorDto,
@@ -60,7 +64,7 @@ export class WarriorsController {
     try {
       warriorId = await this.warriorsService.create(warrior).then(w => w.id);
     } catch (e) {
-      this.handleError(e, 'Failed to create a warrior');
+      this.handleError(e, 'err.create.warrior', 'Failed to create a warrior');
     }
 
     res.setHeader('location', WarriorsController.PATH + `/${warriorId}`);
@@ -79,7 +83,7 @@ export class WarriorsController {
     try {
       return this.warriorsService.getById(id);
     } catch (e) {
-      this.handleError(e, 'Failed to get warrior');
+      this.handleError(e, 'err.get.warrior', 'Failed to get warrior');
     }
   }
 
@@ -101,7 +105,7 @@ export class WarriorsController {
     try {
       return this.warriorsService.update(id, warrior);
     } catch (e) {
-      this.handleError(e, 'Failed to create a warrior');
+      this.handleError(e, 'err.update.warrior','Failed to create a warrior');
     }
   }
 
@@ -118,14 +122,15 @@ export class WarriorsController {
     try {
       return this.warriorsService.delete(id);
     } catch (e) {
-      this.handleError(e, 'Failed to delete a warrior');
+      this.handleError(e, 'err.delete.warrior', 'Failed to delete a warrior');
     }
   }
 
-  private handleError(error: Error, defaultMessage: string) {
-    this.log.error({ message: defaultMessage, detail: error });
+  private handleError(error: Error, code: string, defaultMessage: string) {
+    const objectOrError = { code, message: defaultMessage, detail: error };
+    this.log.error(objectOrError);
     throw error instanceof HttpException
       ? error
-      : new InternalServerErrorException(defaultMessage, error.message);
+      : new InternalServerErrorException(objectOrError, error.message);
   }
 }

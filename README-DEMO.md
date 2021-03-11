@@ -240,3 +240,39 @@ npm install -g @nestjs/cli
 
       Request without trace id, will create one   
 ![npm start](img/curl-new-trace-id.png)
+
+- Exception filter
+    - Create the http exception filter
+         ```shell script
+            nest g f filter/http-exception
+         ```
+        and add the logic handling http exception, see [HttpExceptionFilter](/src/filter/http-exception.filter.ts)
+     - Configure the app to use this exception filter by adding in [main.ts](src/main.ts):
+        ```typescript
+         ...
+         app.useGlobalFilters(new HttpExceptionFilter());
+         ...
+        ```
+       or can apply the filter on a specifics endpoints using `@UseFilters(HttpExceptionFilter)`.
+       
+       Before:
+        ````json
+       {
+           "statusCode": 404,
+           "message": "Warrior with id '123' does not exist",
+           "error": "Not found"
+       }
+        ````
+       After:
+       ````json
+       {
+           "errors": [
+               {
+                   "code": "err.warrior-not-found",
+                   "message": "Warrior with id '123' does not exist",
+                   "detail": "Not found"
+               }
+           ],
+           "error_reference": "Warrior=35e6a491-cd46-4457-bec6-557731077005-f926365d-ed3f-4f2c-9107-08ead2deb933"
+       }
+       ````        
