@@ -43,3 +43,33 @@ npm install -g @nestjs/cli
 - Using 3 commands line we have operational node service listening on port `3000` serving `hello-word` resource as example:
 
 ![npm start](img/curl-hello.png)
+
+### 2. Add database config
+
+- Add [docker-compose.yml](docker-compose.yml)
+- Install npm [pg](https://www.npmjs.com/package/pg), [typeorm](https://www.npmjs.com/package/typeorm) and [nestjs/typeorm](https://www.npmjs.com/package/@nestjs/typeorm)
+- Add a database config in [app.module.ts](src/app.module.ts) using ` TypeOrmModule.forRoot({...})`:
+````typescript
+    ...
+    imports: [
+        TypeOrmModule.forRoot({
+          type: 'postgres',
+          host: 'localhost',
+          port: 5432,
+          username: 'user',
+          password: 'pass',
+          database: 'nest',
+          autoLoadEntities: true,
+          synchronize: true,
+          // logging: 'all',
+          cli: {
+            migrationsDir: 'db.migration',
+            entitiesDir: 'src/entities',
+          },
+        }),
+       ...
+      ],
+    ...
+````
+
+![npm start](img/start-with-db.png)
